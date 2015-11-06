@@ -1,0 +1,11 @@
+<html>
+<head>
+	<script type="text/javascript" src="jquery-latest.min.js"></script>
+	<script type="text/javascript" src="rpmmon.js"></script>
+	<link rel="stylesheet" href="rpmmon.css">
+</head>
+<body>
+	<div id="rpm_overview">
+	</div>
+</body>
+</html>

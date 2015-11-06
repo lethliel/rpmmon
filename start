@@ -1,0 +1,105 @@
+#!/usr/bin/env perl
+
+use Dancer2;
+use DB_File;
+
+get '/rpmmon' => sub {
+	template 'rpmmon';
+};
+
+get '/init' => sub {
+	my @rpm_list = `rpm -qa`;
+        my %HASH = ();
+	my %NEW = ();
+	my %OLD = ();
+ 	
+	tie (%HASH,"DB_File","rpm_orig",O_CREAT|O_RDWR);
+	tie (%NEW,"DB_File","new",O_CREAT|O_RDWR);
+        tie (%OLD,"DB_File","old",O_CREAT|O_RDWR);
+	
+	%HASH = ();
+	%NEW = ();
+	%OLD = ();	
+
+	foreach my $rpm (@rpm_list) {
+        	chomp ($rpm);
+        	$HASH{$rpm} = 1;
+	}
+
+	untie (%HASH);
+
+	return "RPM Database initialised...";
+};
+
+get '/view' => sub {
+	my @rpms = `rpm -qa`;
+        my %HASH = ();
+	my %NEW = ();
+	my %OLD = ();
+        my %RPMS = ();
+	my $rpm_sys_counter = 0;
+
+        my @new_on_system=();
+        my @deleted_on_system=();
+        my $delete_trigger = 0;
+        my $new_trigger = 0;
+        my @rpm_list = `rpm -qa`;
+
+        tie (%HASH,"DB_File","rpm_orig",O_CREAT|O_RDWR);
+        tie (%NEW,"DB_File","new",O_CREAT|O_RDWR);
+        tie (%OLD,"DB_File","old",O_CREAT|O_RDWR);
+
+	
+        foreach my $rpm_on_sys (@rpm_list) {
+                chomp ($rpm_on_sys);
+                $RPMS{$rpm_on_sys} = 1;
+                if (exists($HASH{$rpm_on_sys})) {
+                        next;
+                } else {
+			if (exists($OLD{$rpm_on_sys})) {
+				delete $OLD{$rpm_on_sys};
+			}
+			$NEW{$rpm_on_sys} = 1;
+                        $new_trigger = 1;
+                }
+        }
+
+        foreach my $key (keys %HASH) {
+                chomp ($key);
+                if (exists($RPMS{$key})) {
+                        next;
+                } else {
+			if (exists($NEW{$key})) {
+				delete $NEW{$key};
+			}
+			$OLD{$key} = 1;
+                        $delete_trigger = 1;
+                }
+        }
+
+        %HASH = ();
+
+        foreach my $new_key (keys %RPMS) {
+		$rpm_sys_counter += 1;
+                chomp ($new_key);
+                $HASH{$new_key} = 1;
+        }
+
+	foreach my $new (keys %NEW) {
+		chomp($new);
+		push(@new_on_system, $new);
+	}
+	foreach my $old (keys %OLD) {
+                chomp($old);
+                push(@deleted_on_system, $old);
+        }
+	
+
+        untie (%HASH);
+	untie (%NEW);
+	untie (%OLD);
+	
+	template 'view', { count=>$rpm_sys_counter, new_rpm=>\@new_on_system, old_rpm=>\@deleted_on_system };
+};
+
+dance;

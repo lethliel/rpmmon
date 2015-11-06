@@ -1,0 +1,21 @@
+		<table class=rpm>
+		<tr>
+		<td>
+			<h2>Overview of newly isntalled RPMs</h2>
+                	<ul>
+                	[% FOREACH rpm_pack IN new_rpm %]
+                        	<li> [% rpm_pack %]</li>
+                	[% END %]
+                	</ul>
+		</td>
+		<td>
+                	<h2>Overview of deleted RPMs</h2>
+                	<ul>
+                	[% FOREACH rpm_pack IN old_rpm %]
+                        	<li> [% rpm_pack %]</li>
+                	[% END %]
+                	</ul>
+        	</td>
+		</tr>
+		</table>
+		<br><p>There are [% count %] packages installed on this system</p>

@@ -7,6 +7,8 @@ get '/rpmmon' => sub {
 	template 'rpmmon';
 };
 
+
+#Initialize Databases. Clear new and old databases and Fill rpm_orig with outout of rpm -qa
 get '/init' => sub {
 	my @rpm_list = `rpm -qa`;
         my %HASH = ();
@@ -31,13 +33,16 @@ get '/init' => sub {
 	return "RPM Database initialised...";
 };
 
+
+# Get actual installed RPMs and build difference. Write new RPMs into DB 'new' and delted RPMs into DB 'old'.
+# Write currently istalled Packages into rpm_orig as new start point. 
 get '/view' => sub {
 	my @rpms = `rpm -qa`;
         my %HASH = ();
 	my %NEW = ();
 	my %OLD = ();
         my %RPMS = ();
-	my $rpm_sys_counter = 0;
+	my $rpm_sys_counter = 0;  #Counter for sum of installed RPMs 
 
         my @new_on_system=();
         my @deleted_on_system=();
@@ -45,11 +50,13 @@ get '/view' => sub {
         my $new_trigger = 0;
         my @rpm_list = `rpm -qa`;
 
+	# Tie DB File Databases to Hashes.
         tie (%HASH,"DB_File","rpm_orig",O_CREAT|O_RDWR);
         tie (%NEW,"DB_File","new",O_CREAT|O_RDWR);
         tie (%OLD,"DB_File","old",O_CREAT|O_RDWR);
 
 	
+	# Identify newly installed packages and write into %NEW. If existent in %OLD --> Delete
         foreach my $rpm_on_sys (@rpm_list) {
                 chomp ($rpm_on_sys);
                 $RPMS{$rpm_on_sys} = 1;
@@ -64,6 +71,7 @@ get '/view' => sub {
                 }
         }
 
+	# Identify deleted packes and write into %OLD. If existent in %NEW --> Delete
         foreach my $key (keys %HASH) {
                 chomp ($key);
                 if (exists($RPMS{$key})) {
@@ -77,14 +85,17 @@ get '/view' => sub {
                 }
         }
 
+	#Clear initial HASH
         %HASH = ();
 
+	#Build new originator.
         foreach my $new_key (keys %RPMS) {
 		$rpm_sys_counter += 1;
                 chomp ($new_key);
                 $HASH{$new_key} = 1;
         }
 
+	#Build new and delted array for HTML Template
 	foreach my $new (keys %NEW) {
 		chomp($new);
 		push(@new_on_system, $new);
@@ -94,12 +105,14 @@ get '/view' => sub {
                 push(@deleted_on_system, $old);
         }
 	
-
+	#Untie all the databases
         untie (%HASH);
 	untie (%NEW);
 	untie (%OLD);
 	
+	#Load template view
 	template 'view', { count=>$rpm_sys_counter, new_rpm=>\@new_on_system, old_rpm=>\@deleted_on_system };
 };
 
+#And start dancing...
 dance;

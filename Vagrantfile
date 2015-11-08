@@ -66,10 +66,10 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
    config.vm.provision "shell", inline: <<-SHELL
-     zypper in make gcc git
+     zypper --non-interactive in make gcc git
      cpan Dancer2 Template File::Slurper
      cd /home/vagrant
-     git clone https://github.com/lethliel/rpmlive.git
-     /home/vagrant/rpmlive/start
+     git clone https://github.com/lethliel/rpmmon.git
+     nohup /home/vagrant/rpmmon/start &
    SHELL
 end

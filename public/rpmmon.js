@@ -1,6 +1,11 @@
 $(document).ready(function()
 {
-	var timeout = setTimeout(reload_rpm_overview, 10000);
+	$('#start').click(function() {
+		reload_rpm_overview();
+	});
+	$('#reset').click(function() {
+                $('#rpm_overview').load('init');
+        });
 
 });
 

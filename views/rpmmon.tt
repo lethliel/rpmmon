@@ -4,7 +4,9 @@
 	<script type="text/javascript" src="rpmmon.js"></script>
 	<link rel="stylesheet" href="rpmmon.css">
 </head>
-<body>
+<body>	<div id="header_information">
+		<button type="button" id="reset">Reset DBs</button><button type="button" id="start">Start Monitoring</button>
+	</div>
 	<div id="rpm_overview">
 	</div>
 </body>

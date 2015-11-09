@@ -46,8 +46,6 @@ get '/view' => sub {
 
         my @new_on_system=();
         my @deleted_on_system=();
-        my $delete_trigger = 0;
-        my $new_trigger = 0;
         my @rpm_list = `rpm -qa`;
 
 	# Tie DB File Databases to Hashes.
@@ -67,7 +65,6 @@ get '/view' => sub {
 				delete $OLD{$rpm_on_sys};
 			}
 			$NEW{$rpm_on_sys} = 1;
-                        $new_trigger = 1;
                 }
         }
 
@@ -81,7 +78,6 @@ get '/view' => sub {
 				delete $NEW{$key};
 			}
 			$OLD{$key} = 1;
-                        $delete_trigger = 1;
                 }
         }
 

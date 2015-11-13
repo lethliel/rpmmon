@@ -70,6 +70,5 @@ Vagrant.configure(2) do |config|
      cpan Dancer2 Template File::Slurper
      cd /home/vagrant
      git clone https://github.com/lethliel/rpmmon.git
-     nohup /home/vagrant/rpmmon/start &
    SHELL
 end

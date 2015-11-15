@@ -12,8 +12,7 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "suse13.2"
-  config.vm.box_url = "http://sourceforge.net/projects/opensusevagrant/files/13.2/opensuse-13.2-64.box/download"	
+  config.vm.box = "webhippie/opensuse-13.2"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -66,8 +65,9 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
    config.vm.provision "shell", inline: <<-SHELL
-     zypper --non-interactive in make gcc git
-     cpan Dancer2 Template File::Slurper
+     zypper --non-interactive ar http://download.opensuse.org/repositories/devel:/languages:/perl/openSUSE_13.2/devel:languages:perl.repo
+     zypper --non-interactive refresh	   
+     zypper --non-interactive in make gcc git perl-Dancer2
      cd /home/vagrant
      git clone https://github.com/lethliel/rpmmon.git
    SHELL

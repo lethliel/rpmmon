@@ -67,7 +67,7 @@ Vagrant.configure(2) do |config|
    config.vm.provision "shell", inline: <<-SHELL
      zypper --non-interactive ar http://download.opensuse.org/repositories/devel:/languages:/perl/openSUSE_13.2/devel:languages:perl.repo
      zypper --non-interactive refresh	   
-     zypper --non-interactive in make gcc git perl-Dancer2
+     zypper --non-interactive in make gcc git perl-Dancer2 perl-RPM2
      cd /home/vagrant
      git clone https://github.com/lethliel/rpmmon.git
    SHELL

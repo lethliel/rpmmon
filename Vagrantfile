@@ -65,11 +65,11 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
    config.vm.provision "shell", inline: <<-SHELL
-     zypper --non-interactive ar -no-gpgcheck http://download.opensuse.org/repositories/devel:/languages:/perl/openSUSE_13.2/devel:languages:perl.repo
+     zypper --non-interactive ar --no-gpgcheck http://download.opensuse.org/repositories/devel:/languages:/perl/openSUSE_13.2/devel:languages:perl.repo
      zypper --non-interactive refresh	   
      zypper --non-interactive in make gcc git perl-Dancer2 perl-RPM2
      cd /home/vagrant
      git clone https://github.com/lethliel/rpmmon.git
-     chown -R vagrant:vagrant /home/vagrant/rpmmon/
+     chown -R vagrant:users /home/vagrant/rpmmon/
    SHELL
 end

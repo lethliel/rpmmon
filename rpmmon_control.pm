@@ -1,13 +1,16 @@
 package rpmmon_control;
 
 use strict;
+use FindBin;
 use DB_File;
 use RPM2;
 use Data::Dumper;
+use FindBin; 
 
 sub get_current_rpms {
 	my $new = shift;
 	my @rpm_list = ();
+	our $db_file = "$FindBin::Bin/rpm_orig";
 
 	my $rpm_db = RPM2->open_rpm_db();
         my $iter = $rpm_db->find_all_iter();
@@ -17,7 +20,7 @@ sub get_current_rpms {
         };
         @rpm_list = sort @rpm_list;
 
-	if (! -e "rpm_orig" || $new) {
+	if (! -e $db_file || $new) {
 		my %HASH = ();
           	tie (%HASH,"DB_File","rpm_orig",O_CREAT|O_RDWR);
          	%HASH  = map {$_ => 1} @rpm_list;

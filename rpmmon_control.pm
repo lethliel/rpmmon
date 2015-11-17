@@ -4,13 +4,12 @@ use strict;
 use FindBin;
 use DB_File;
 use RPM2;
-use Data::Dumper;
 use FindBin; 
+our $db_file = "$FindBin::Bin/rpm_orig";
 
 sub get_current_rpms {
 	my $new = shift;
 	my @rpm_list = ();
-	our $db_file = "$FindBin::Bin/rpm_orig";
 
 	my $rpm_db = RPM2->open_rpm_db();
         my $iter = $rpm_db->find_all_iter();
@@ -22,7 +21,7 @@ sub get_current_rpms {
 
 	if (! -e $db_file || $new) {
 		my %HASH = ();
-          	tie (%HASH,"DB_File","rpm_orig",O_CREAT|O_RDWR);
+          	tie (%HASH,"DB_File",$db_file,O_CREAT|O_RDWR);
          	%HASH  = map {$_ => 1} @rpm_list;
          	untie %HASH
 	} 
@@ -37,7 +36,7 @@ sub get_changes {
 	my @rpms_on_system = get_current_rpms();
 	my $rpm_counter = 0;
 	my %rpm_on_sys_hash = map {$_ => 1} @rpms_on_system;
-	tie (%START,"DB_File","rpm_orig",O_RDWR); 
+	tie (%START,"DB_File",$db_file,O_RDWR); 
 	foreach my $rpm_on_sys (@rpms_on_system) {
 		push (@new_on_system,$rpm_on_sys) if (! exists $START{$rpm_on_sys});
 		$rpm_counter += 1;

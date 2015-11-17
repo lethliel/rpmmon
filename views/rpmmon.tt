@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="rpmmon.css">
 </head>
 <body>	<div id="header_information">
-		<button type="button" id="reset">Reset DBs</button><button type="button" id="start">Start Monitoring</button>
+		<button type="button" id="reset">Reset DBs</button>
 	</div>
 	<div id="rpm_overview">
 	</div>

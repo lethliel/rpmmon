@@ -11,15 +11,14 @@ get '/rpmmon' => sub {
 };
 
 
-#Initialize Databases. Clear new and old databases and Fill rpm_orig with outout of rpm -qa
+#Initialize Databases. Set new starting point. 
 get '/init' => sub {
 	rpmmon_control::get_current_rpms(1);
-	return "RPM Database initialised...";
+	return "<br>RPM Database initialised... Please wait for the site to reload...<br>";
 };
 
 
-# Get actual installed RPMs and build difference. Write new RPMs into DB 'new' and delted RPMs into DB 'old'.
-# Write currently istalled Packages into rpm_orig as new start point. 
+# Get actual installed RPMs and build difference to starting point.
 get '/view' => sub {
 	my ($rpm_counter, $new_on_system, $deleted_on_system) = rpmmon_control::get_changes();
 	template 'view', { count=>$rpm_counter, new_rpm=>$new_on_system, old_rpm=>$deleted_on_system };

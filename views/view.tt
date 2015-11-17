@@ -1,7 +1,7 @@
 		<table class=rpm>
 		<tr>
 		<td>
-			<h2>Overview of newly isntalled RPMs</h2>
+			<h2>Overview of newly installed RPMs</h2>
                 	<ul>
                 	[% FOREACH rpm_pack IN new_rpm %]
                         	<li> [% rpm_pack %]</li>

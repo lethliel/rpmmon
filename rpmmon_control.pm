@@ -36,13 +36,12 @@ sub get_changes {
 	my @new_on_system = ();
 	my @deleted_on_system = ();
 	my @rpms_on_system = get_current_rpms();
-	my $rpm_counter = 0;
+	my $rpm_counter = scalar(@rpms_on_system);
 	my %rpm_on_sys_hash = map {$_ => 1} @rpms_on_system;
 	tie (%START,"DB_File",$db_file,O_RDWR);
 	#Determine new packages on system 
 	foreach my $rpm_on_sys (@rpms_on_system) {
 		push (@new_on_system,$rpm_on_sys) if (! exists $START{$rpm_on_sys});
-		$rpm_counter += 1;
 	}
 	#Determine removed packages from system
 	foreach my $rpm_start (keys %START) {
